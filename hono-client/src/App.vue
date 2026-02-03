@@ -27,6 +27,9 @@ const text = ref('')
 async function addUser() {
   const response = await fetch('http://localhost:3000/users', {
     method: 'post',
+    headers: {
+      'content-type': 'application/json',
+    },
     body: JSON.stringify({
       newUsername: text.value,
     }),
@@ -45,7 +48,7 @@ async function addUser() {
 
   <ul>
     <li v-for="(user, index) in users" @click="deleteUser(index)">
-      {{ user }}
+      {{ user.toLowerCase() }}
     </li>
   </ul>
 

@@ -1,6 +1,8 @@
 import { serve } from '@hono/node-server'
 import { Hono } from 'hono'
 import { cors } from 'hono/cors'
+import * as z from 'zod'
+import { sValidator } from '@hono/standard-validator'
 
 const app = new Hono()
 app.use(cors())
@@ -21,8 +23,12 @@ app.get('/users/:id', (c) => {
   return c.text(users[id])
 })
 
-app.post('/users', async (c) => {
-  const body = await c.req.json()
+const schema = z.object({
+  newUsername: z.email(),
+})
+
+app.post('/users', sValidator('json', schema), async (c) => {
+  const body = c.req.valid('json')
   users.push(body.newUsername)
   return c.text('ok')
 })
